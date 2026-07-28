@@ -72,6 +72,15 @@ input_df = pd.DataFrame({
     "region": [region]
 })
 
+# Force pandas to know about all possible categories,
+# so get_dummies creates the correct columns even with a single row
+input_df["sex"] = pd.Categorical(input_df["sex"], categories=["female", "male"])
+input_df["smoker"] = pd.Categorical(input_df["smoker"], categories=["no", "yes"])
+input_df["region"] = pd.Categorical(
+    input_df["region"],
+    categories=["northeast", "northwest", "southeast", "southwest"]
+)
+
 input_df = pd.get_dummies(
     input_df,
     columns=["sex", "smoker", "region"],
@@ -83,8 +92,10 @@ input_df = input_df.reindex(
     fill_value=0
 )
 
-prediction = model.predict(input_df)[0]
+if st.button("Predict Insurance Charges"):
 
-st.subheader("Predicted Insurance Charges")
+    prediction = model.predict(input_df)[0]
 
-st.success(f"${prediction:,.2f}")
+    st.subheader("Predicted Insurance Charges")
+
+    st.success(f"Predicted Insurance Charges: ${prediction:,.2f}")
