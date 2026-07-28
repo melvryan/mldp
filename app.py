@@ -39,51 +39,33 @@ children = st.number_input(
     value=0
 )
 
-sex = st.selectbox(
-    "Sex",
-    ["male", "female"]
-)
-
 smoker = st.selectbox(
     "Smoker",
-    ["yes", "no"]
-)
-
-region = st.selectbox(
-    "Region",
-    [
-        "northeast",
-        "northwest",
-        "southeast",
-        "southwest"
-    ]
+    ["no", "yes"]
 )
 
 # Calculate BMI
 height_m = height / 100
 bmi = weight / (height_m ** 2)
 
+st.write(f"Calculated BMI: **{bmi:.2f}**")
+
 input_df = pd.DataFrame({
     "age": [age],
     "bmi": [bmi],
     "children": [children],
-    "sex": [sex],
-    "smoker": [smoker],
-    "region": [region]
+    "smoker": [smoker]
 })
 
-# Force pandas to know about all possible categories,
-# so get_dummies creates the correct columns even with a single row
-input_df["sex"] = pd.Categorical(input_df["sex"], categories=["female", "male"])
-input_df["smoker"] = pd.Categorical(input_df["smoker"], categories=["no", "yes"])
-input_df["region"] = pd.Categorical(
-    input_df["region"],
-    categories=["northeast", "northwest", "southeast", "southwest"]
+# Tell pandas all smoker categories
+input_df["smoker"] = pd.Categorical(
+    input_df["smoker"],
+    categories=["no", "yes"]
 )
 
 input_df = pd.get_dummies(
     input_df,
-    columns=["sex", "smoker", "region"],
+    columns=["smoker"],
     drop_first=True
 )
 
